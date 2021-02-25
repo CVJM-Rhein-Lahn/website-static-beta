@@ -33,6 +33,10 @@ jobs:
     - uses: actions/download-artifact@v1
       with:
         name: build
+    - name: "Install rsync"
+      run: |
+        apt update
+        apt install -y rsync
     - name: "Prepare SSH key and known hosts"
       # https://github.com/symfony/cli/issues/227#issuecomment-601680974
       run: |
