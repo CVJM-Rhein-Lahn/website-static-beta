@@ -43,7 +43,7 @@ jobs:
     - name: Create and extract to working directory
       run: |
         mkdir site
-        tar -xzvf build/build.tar.gz -C wrktmp/
+        tar -xzvf build/build.tar.gz -C site/
     - name: Run deploy script
       run: |
         cd site
