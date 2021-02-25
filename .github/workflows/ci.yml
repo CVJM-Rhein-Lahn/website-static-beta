@@ -12,6 +12,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Set proper permission
+      run: |
+        chmod 777 ${{ github.workspace }}
     - name: Build site
       run: |
         docker run \
