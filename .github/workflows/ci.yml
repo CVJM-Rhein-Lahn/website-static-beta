@@ -33,8 +33,6 @@ jobs:
     - uses: actions/download-artifact@v1
       with:
         name: build
-    - name: "Install rsync"
-      run: sudo apt-get install -y rsync
     - name: "Prepare SSH key and known hosts"
       # https://github.com/symfony/cli/issues/227#issuecomment-601680974
       run: |
@@ -48,5 +46,5 @@ jobs:
         tar -xzvf build/build.tar.gz -C wrktmp/
     - name: Run deploy script
       run: |
-        rsync -rSlh --stats wrktmp/ ${{ secrets.USERNAME }}@${{ secrets.HOST }}:${{ secrets.WEBPATH }}
-      #ssh -o StrictHostKeyChecking=yes ${{ secrets.USERNAME }}@${{ secrets.HOST }} 'bash -s' -- < build/ci-deploy.sh ${{ secrets.WEBPATH }}
+        cd wrktmp
+        scp -r . ${{ secrets.USERNAME }}@${{ secrets.HOST }}:${{ secrets.WEBPATH }}/
