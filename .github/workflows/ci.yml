@@ -42,9 +42,9 @@ jobs:
         ssh-keyscan ${{ secrets.HOST }} >> ~/.ssh/known_hosts
     - name: Create and extract to working directory
       run: |
-        mkdir wrktmp
+        mkdir site
         tar -xzvf build/build.tar.gz -C wrktmp/
     - name: Run deploy script
       run: |
-        cd wrktmp
-        scp -r . ${{ secrets.USERNAME }}@${{ secrets.HOST }}:${{ secrets.WEBPATH }}/
+        cd site
+        scp -r site/ ${{ secrets.USERNAME }}@${{ secrets.HOST }}:${{ secrets.WEBPATH }}/
