@@ -46,5 +46,4 @@ jobs:
         tar -xzvf build/build.tar.gz -C site/
     - name: Run deploy script
       run: |
-        cd site
         scp -r site/ ${{ secrets.USERNAME }}@${{ secrets.HOST }}:${{ secrets.WEBPATH }}/
