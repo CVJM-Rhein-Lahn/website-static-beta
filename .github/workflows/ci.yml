@@ -12,14 +12,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Set proper permission
-      run: |
-        chmod 777 ${{ github.workspace }}
     - name: Build site
       run: |
         docker run \
         -v ${{ github.workspace }}:/srv/jekyll -v ${{ github.workspace }}/_site:/srv/jekyll/_site \
-        jekyll/builder:stable /bin/bash -c "chmod +x ci-build.sh && ./ci-build.sh ${{ github.sha }} ${{ github.run_id }}"
+        jekyll/builder:stable /bin/bash -c "chmod 777 /srv/jekyll && jekyll build --future --config _config.yml && mkdir build && tar -czvf build/build.tar.gz -C _site ."
     - name: Upload artifact
       uses: actions/upload-artifact@v1
       with:
@@ -40,10 +37,7 @@ jobs:
         echo "${{ secrets.KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
         ssh-keyscan ${{ secrets.HOST }} >> ~/.ssh/known_hosts
-    - name: Create and extract to working directory
-      run: |
-        mkdir site
-        tar -xzvf build/build.tar.gz -C site/
     - name: Run deploy script
       run: |
-        scp -r site/ ${{ secrets.USERNAME }}@${{ secrets.HOST }}:${{ secrets.WEBPATH }}/
+        scp build/build.tar.gz ${{ secrets.USERNAME }}@${{ secrets.HOST }}:${{ secrets.WEBPATH }}/
+        ssh -o StrictHostKeyChecking=yes ${{ secrets.USERNAME }}@${{ secrets.HOST }} 'bash -c "mkdir ${{ secrets.WEBPATH }}/build; tar -xvf ${{ secrets.WEBPATH }}/build.tar.gz -C ${{ secrets.WEBPATH }}/build; rm -Rf ${{ secrets.WEBPATH }}/site; mv ${{ secrets.WEBPATH }}/build ${{ secrets.WEBPATH }}/site; rm ${{ secrets.WEBPATH }}/build.tar.gz"'
