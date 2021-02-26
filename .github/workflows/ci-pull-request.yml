@@ -2,7 +2,6 @@ name: Jekyll site test builder
 
 on:
   pull_request:
-    branches: [ $default-branch ]
 
 jobs:
   build_job:
@@ -11,6 +10,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      with: 
+        ref: ${{ github.event.pull_request.head.sha }}
     - name: Build site
       run: |
         docker run \
